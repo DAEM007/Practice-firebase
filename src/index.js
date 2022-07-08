@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import {
-    getFirestore, collection, getDocs,
+    getFirestore, collection, onSnapshot,
     addDoc, deleteDoc, doc
 } from 'firebase/firestore'
 
@@ -22,18 +22,31 @@ const db = getFirestore()
 // collection ref
 const colRef = collection(db, 'Books')
 
-// get collection data
-getDocs(colRef)
-  .then((snapshot) => {
-    let books = []
-    snapshot.docs.forEach((doc) => {
-      books.push({ ...doc.data(), id: doc.id })
-    })
-    console.log(books);
+// get collection data invoking the getdocs function
+
+// getDocs(colRef)
+//   .then((snapshot) => {
+//     let books = []
+//     snapshot.docs.forEach((doc) => {
+//       books.push({ ...doc.data(), id: doc.id })
+//     })
+//     console.log(books);
+//   })
+//   .catch(err => {
+//     console.log(err.message);
+//   })
+
+// Below is an alternative to this....
+
+// real time collection data
+
+onSnapshot(colRef, (snapshot) => {
+  let books = []
+  snapshot.docs.forEach((doc) => {
+    books.push({ ...doc.data(), id: doc.id })
   })
-  .catch(err => {
-    console.log(err.message);
-  })
+  console.log(books);
+})
 
   // adding documents
 const addBookForm = document.querySelector('.add');
@@ -55,12 +68,11 @@ const deleteBookForm = document.querySelector('.delete')
 deleteBookForm.addEventListener('submit', e => {
   e.preventDefault();
 
-  const docRef = doc(db, 'Books',  deleteBookForm.id.value);
+  const docRef = doc(db, 'Books', deleteBookForm.id.value)
 
   deleteDoc(docRef)
     .then(() => {
-      deleteBookForm.reset();
+      deleteBookForm.reset()
     })
-
 
 })
