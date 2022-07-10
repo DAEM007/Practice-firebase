@@ -1,8 +1,11 @@
 import { initializeApp } from "firebase/app";
 import {
     getFirestore, collection, onSnapshot,
-    addDoc, deleteDoc, doc
-} from 'firebase/firestore'
+    addDoc, deleteDoc, doc,
+    query, where,
+    orderBy, serverTimestamp,
+    getDoc
+} from 'firebase/firestore';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDBGHOZbYEQz5ibnxTrzNpJFNCCYM5emDo",
@@ -22,6 +25,9 @@ const db = getFirestore()
 // collection ref
 const colRef = collection(db, 'Books')
 
+// Queries
+const q = query(colRef, orderBy('createdAt'))
+
 // get collection data invoking the getdocs function
 
 // getDocs(colRef)
@@ -40,12 +46,12 @@ const colRef = collection(db, 'Books')
 
 // real time collection data
 
-onSnapshot(colRef, (snapshot) => {
-  let books = []
+onSnapshot(q, (snapshot) => {
+  let books = [];
   snapshot.docs.forEach((doc) => {
     books.push({ ...doc.data(), id: doc.id })
-  })
-  console.log(books);
+  });
+  console.log(books); 
 })
 
   // adding documents
@@ -55,7 +61,8 @@ addBookForm.addEventListener('submit', e => {
 
   addDoc(colRef, {
     title: addBookForm.title.value,
-    author: addBookForm.author.value
+    author: addBookForm.author.value,
+    createdAt: serverTimestamp()
   })
   .then(() => {
     addBookForm.reset();
@@ -75,4 +82,20 @@ deleteBookForm.addEventListener('submit', e => {
       deleteBookForm.reset()
     })
 
+})
+
+// get a single document
+const docRef = doc(db, 'Books', '0lYuV3Em0UGuK6EBzixw')
+
+// getDoc(docRef)
+//   .then((doc) => {
+//     console.log(doc.data(), doc.id);
+//   })
+//   .catch((err) => {
+//     console.log(err, err.message);
+//   })
+
+// real time listener for a single document
+onSnapshot(docRef, (doc) => {
+  console.log(doc.data(), doc.id);
 })
