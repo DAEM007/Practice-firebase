@@ -186,3 +186,5 @@ unsubButton.addEventListener('click', () => {
   unsubDoc()
   unsubAuth()
 })
+
+// Firebase basics completed
