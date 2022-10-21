@@ -23,7 +23,7 @@ const firebaseConfig = {
   }
 
 //   init firebase app
-  initializeApp(firebaseConfig)
+initializeApp(firebaseConfig)
 
 // init services
 const db = getFirestore() 
@@ -53,8 +53,7 @@ const q = query(colRef, orderBy('createdAt'))
 
 // Below is an alternative to this....
 
-// real time collection data
-
+// real time listener for a collection data
 const unsubCol = onSnapshot(q, (snapshot) => {
   let books = [];
   snapshot.docs.forEach((doc) => {
@@ -67,7 +66,7 @@ const unsubCol = onSnapshot(q, (snapshot) => {
 const addBookForm = document.querySelector('.add');
 addBookForm.addEventListener('submit', e => {
   e.preventDefault();
-
+  
   addDoc(colRef, {
     title: addBookForm.title.value,
     author: addBookForm.author.value,
